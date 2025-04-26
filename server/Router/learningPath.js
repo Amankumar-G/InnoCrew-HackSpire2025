@@ -158,8 +158,4 @@ router.get('/topic', passport.authenticate('jwt', { session: false }), wrapAsync
     });
 }));
 
-
-
-
-
 export default router;

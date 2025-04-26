@@ -5,8 +5,11 @@ import Split from "react-split";
 import { CheckCircle } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
+import axios from "axios";
 
 const LearningPage = () => {
+  const [clearChat, setClearChat] = useState(false);
+
   const location = useLocation();
   const responseData = location.state?.responseData || [];
   const [selectedTopic, setSelectedTopic] = useState(responseData[0]);
@@ -19,19 +22,49 @@ const LearningPage = () => {
     setShowModal(true);
   };
 
-  const handleModalChoice = (choice) => {
+  const handleModalChoice = async (choice) => {
     setShowModal(false);
+  
     if (choice === "quiz") {
-      // Redirect to quiz page
       console.log("Redirect to quiz page 🚀");
+      // You can handle quiz redirection here
+    } else if (choice === "learn" && selectedPage) {
+      // Only send POST when user selects "learn"
+      try {
+        await axios.post('http://localhost:5000/chat-conversation/initialize', {
+          systemPrompt: selectedPage.content,
+        });
+        console.log("✅ Content sent successfully for learning!");
+      } catch (error) {
+        console.error("❌ Error sending content to backend:", error);
+      }
     }
   };
+  
 
-  const markPageComplete = (pageTitle) => {
+  const markPageComplete = async (pageTitle) => {
     if (!completedPages.includes(pageTitle)) {
       setCompletedPages((prev) => [...prev, pageTitle]);
     }
+  
+    try {
+      await axios.post("http://localhost:5000/chat-conversation/clear", {
+        page: selectedPage
+      })
+        .then(response => {
+          console.log('Response:', response.data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+      console.log("✅ Chat conversation cleared!");
+      setClearChat(true); // Trigger clearing of the chat
+    } catch (error) {
+      console.error("❌ Failed to clear chat conversation:", error);
+    }
   };
+  
+  
 
   return (
     <div className="bg-[#1E1E2F] h-[90vh] flex flex-col">
@@ -98,7 +131,7 @@ const LearningPage = () => {
 
             {/* Chatbot */}
             <div className="p-4 bg-[#29293D] overflow-y-auto">
-              <Chatbot />
+              <Chatbot clearChat={clearChat}/>
             </div>
           </Split>
         )}
