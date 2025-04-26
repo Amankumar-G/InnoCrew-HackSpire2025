@@ -1,6 +1,6 @@
 export default function SignupPage() {
     return (
-      <main className="min-h-screen bg-[#1E1E2F] font-poppins flex items-center justify-center scroll-smooth pt-[6%]">
+      <div className="min-h-screen pb-[3%] bg-[#1E1E2F] font-poppins flex items-center justify-center scroll-smooth pt-[3%]">
         <div className="bg-[#29293D] rounded-xl shadow-2xl p-8 w-full max-w-md">
           <h1 className="text-4xl font-bold text-center text-[#E0E6F8] mb-8">
             Create Your Account
@@ -74,12 +74,12 @@ export default function SignupPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-[#6C63FF] hover:bg-[#817CFF] text-white py-4 rounded-2xl text-lg font-semibold shadow-md transition"
+              className="w-full bg-[#A0C4FF] hover:bg-[#89B2FF] text-black py-4 rounded-2xl text-lg font-semibold shadow-md transition"
             >
               Sign Up
             </button>
           </form>
         </div>
-      </main>
+      </div>
     );
   }
