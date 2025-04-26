@@ -53,7 +53,7 @@ const Navbar = () => {
         {user && (
           <>
             <button 
-              onClick={() => navigate('/dead-and-dumb')} 
+              onClick={() => navigate('/deaf-and-dumb')} 
               className="text-[#EDEDED] hover:text-[#A29BFE] transition-all"
             >
               Deaf and dumb
