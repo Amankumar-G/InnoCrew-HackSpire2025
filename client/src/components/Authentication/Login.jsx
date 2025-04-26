@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/userContext";
-
+import axios from "axios"; // Import Axios
 const LoginPage = () => {
   const { setUser } = useUser();
   const navigate = useNavigate();
@@ -11,15 +11,28 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     
-    // Dummy authentication (replace with real backend call later)
-    if (email && password) {
-      setUser({ email }); // Set user in context
-      navigate("/"); // Redirect to home
-    } else {
-      alert("Please enter email and password!");
+    try {
+      const response = await axios.post("http://localhost:5000/student/login", {
+        email,
+        password
+      });
+
+      const { token } = response.data;
+      console.log("Login successful:", response.data);
+      if (token) {
+        localStorage.setItem("authToken", token);  // 🛑 Save token in storage
+        setUser(email);                             // 🛑 Set user in context (optional: whatever your backend sends)
+        navigate("/");                             // 🛑 Redirect to home
+      } else {
+        alert("Login failed. No token received.");
+      }
+
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Login failed! Please check your credentials.");
     }
   };
 
