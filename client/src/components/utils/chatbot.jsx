@@ -1,24 +1,39 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Send } from "lucide-react";
+import axios from "axios";
 
-const Chatbot = () => {
+const Chatbot = ({ clearChat }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const endRef = useRef(null);
 
-  const randomReplies = [
-    "That's interesting! Let me explain...",
-    "Good point! Here's what I think...",
-    "Let's dive deeper into that!",
-    "That's a great question!",
-  ];
-
-  const sendMessage = () => {
+  useEffect(() => {
+    if (clearChat) {
+      setMessages([]); // Clear messages
+    }
+  }, [clearChat]);
+  
+  const sendMessage = async () => {
     if (!input.trim()) return;
-    const reply = randomReplies[Math.floor(Math.random() * randomReplies.length)];
-    setMessages((prev) => [...prev, { type: "user", text: input }, { type: "bot", text: reply }]);
+  
+    const userMessage = input;
+    setMessages((prev) => [...prev, { type: "user", text: userMessage }]);
     setInput("");
+  
+    try {
+      const response = await axios.post("http://localhost:5000/chat-conversation/send", {
+        message: userMessage,
+      });
+  
+      const botReply = response.data?.response || "Hmm... I couldn't understand that.";
+      
+      setMessages((prev) => [...prev, { type: "bot", text: botReply }]);
+    } catch (error) {
+      console.error("Error communicating with backend:", error);
+      setMessages((prev) => [...prev, { type: "bot", text: "❌ Error connecting to server." }]);
+    }
   };
+  
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });

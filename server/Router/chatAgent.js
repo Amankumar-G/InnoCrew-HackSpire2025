@@ -18,6 +18,7 @@ app.post('/initialize', async (req, res) => {
     At the end of the prompt, you will be given a learning text, which is the topic the student has most recently learned. You must strictly focus on answering questions related to this topic only. If any unrelated questions are asked, do not answer them. Instead, kindly redirect the student to the topic at hand.
     Remember, always keep answers clear, concise, and engaging. If necessary, prompt the student to ask for further clarification or elaboration`;
     const updatedSystemPrompt =myPrompt + systemPrompt;
+    console.log('Initializing chatbot with updated system prompt:', updatedSystemPrompt);
   if (!updatedSystemPrompt) {
     return res.status(400).json({ error: 'systemPrompt is required' });
   }
