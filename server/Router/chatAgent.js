@@ -13,8 +13,12 @@ let chatbot = null;
 
 app.post('/initialize', async (req, res) => {
   const { systemPrompt } = req.body;
-  
-  if (!systemPrompt) {
+  const myPrompt = `
+    Assume you are an expert teacher for every topic. A curious student will ask many questions, and your goal is to provide short, accurate, and simple answers that are easy to understand. Always make sure to encourage the student to ask for clarifications if they don't understand, and actively guide them to deeper insights.
+    At the end of the prompt, you will be given a learning text, which is the topic the student has most recently learned. You must strictly focus on answering questions related to this topic only. If any unrelated questions are asked, do not answer them. Instead, kindly redirect the student to the topic at hand.
+    Remember, always keep answers clear, concise, and engaging. If necessary, prompt the student to ask for further clarification or elaboration`;
+    const updatedSystemPrompt =myPrompt + systemPrompt;
+  if (!updatedSystemPrompt) {
     return res.status(400).json({ error: 'systemPrompt is required' });
   }
 
@@ -24,7 +28,7 @@ app.post('/initialize', async (req, res) => {
   });
 
   const prompt = ChatPromptTemplate.fromMessages([
-    SystemMessagePromptTemplate.fromTemplate(systemPrompt),
+    SystemMessagePromptTemplate.fromTemplate(updatedSystemPrompt),
     new MessagesPlaceholder('chat_history'),
     HumanMessagePromptTemplate.fromTemplate('{input}'),
   ]);
