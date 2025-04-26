@@ -17,32 +17,65 @@ const PdfAssistantPage = () => {
 
   const chatEndRef = useRef(null); // Reference for the end of the chat container
 
+  // const handleFileChange = (e) => {
+  //   if (e.target.files[0]) {
+  //     setFile(e.target.files[0]);
+  //   }
+
+  //   const formData = FormData(file,"pdf");
+  //   axios.post("http://localhost:5000/upload/one", formData).then(res=>console.log(res));
+
+  // };
+
   const handleFileChange = (e) => {
-    if (e.target.files[0]) {
-      setFile(e.target.files[0]);
-    }
+    const selectedFile = e.target.files[0];
+    if (!selectedFile) return;
 
-    const formData = FormData(file,"pdf");
-    axios.post("http://localhost:5000/upload/one", formData).then(res=>console.log(res));
+    const formData = new FormData();
+    formData.append('pdf', selectedFile);  // use selectedFile directly!
 
-  };
+    console.log(formData.get('pdf')); // to check if file is there properly
 
-  const handleSend = () => {
+    axios.post("http://localhost:5000/upload/one", formData)
+      .then(res => {console.log(res);
+        if (e.target.files[0]) {
+          setFile(e.target.files[0]);
+        }
+      })
+      .catch(err => console.error(err));
+};
+const handleSend = () => {
+  if (!question.trim()) return;
+  setMessages((prev) => [
+    ...prev,
+    { type: "user", text: question },
+    // { type: "bot", text: botResponse },
+  ]);
 
+  setQuestion(""); // Clear the input
 
+  axios.post("http://localhost:5000/chat", { userQuery: question })
+    .then(res => {
+      console.log(res);
 
-    // if (!question.trim()) return;
+      const botResponse = res.data.message || "No response"; // assuming your backend sends { answer: "..." }
 
-    // const randomAnswer =
-    //   randomAnswers[Math.floor(Math.random() * randomAnswers.length)];
-    axios.post("http://localhost:5000/chat", { userQuery:question }).then(res=>console.log(res));
-    setMessages((prev) => [
-      ...prev,
-      { type: "user", text: question },
-      { type: "bot", text: randomAnswer },
-    ]);
-    setQuestion("");
-  };
+      // Update messages after getting the bot reply
+      setMessages((prev) => [
+        ...prev,
+        // { type: "user", text: question },
+        { type: "bot", text: botResponse },
+      ]);
+
+      // Update randomAnswer correctly (if you still need it)
+      setRandomAnswer(prev => [...prev, "helo"]);
+      
+    
+    })
+    .catch(err => {
+      console.error(err);
+    });
+};
 
   useEffect(() => {
     // Scroll to the last user message whenever messages change
