@@ -9,12 +9,13 @@ import SignUpPage from "./components/Authentication/SignUp";
 import QuizzesPage from "./components/Features/Quiz";
 import PathsPage from "./components/Features/Paths";
 import PdfAssistantPage from "./components/Features/Pdf";
+import Dashboard from "./components/Features/Dashboard";
 import './App.css';
 
 // 👇 A new component to use useLocation inside Router
 const AppContent = () => {
   const location = useLocation();
-  const hideFooterRoutes = ["/pdf-assistant"];
+  const hideFooterRoutes = ["/pdf-assistant", "/dashboard"];
 
   return (
 <div className="bg-[#1E1E2F] min-h-screen flex flex-col font-poppins text-[#EDEDED]">
@@ -28,6 +29,7 @@ const AppContent = () => {
       <Route path="/quizzes" element={<QuizzesPage />} />
       <Route path="/pdf-assistant" element={<PdfAssistantPage />} />
       <Route path="/paths" element={<PathsPage />} />
+      <Route path="/dashboard" element={<Dashboard />} />
     </Routes>
   </main>
   
