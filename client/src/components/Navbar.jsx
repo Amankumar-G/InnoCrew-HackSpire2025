@@ -35,6 +35,12 @@ const Navbar = () => {
         >
           Personalized Paths
         </button>
+        <button 
+          onClick={() => navigate('/dashboard')} 
+          className="text-[#EDEDED] hover:text-[#A29BFE] transition-all"
+        >
+          Dashboard
+        </button>
 
         {/* Login Button */}
         <button 
