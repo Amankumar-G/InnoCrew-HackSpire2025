@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { dummyPages } from "../../assets/dummy"; // Dummy data
-import Modal from "../utils/modal"; // Fancy Modal
-import Chatbot from "../utils/chatbot"; // Our chatbot component
-import Split from "react-split"; // For adjustable panes
-import { CheckCircle } from 'lucide-react'; // CheckCircle icon from Lucide React
+import Modal from "../utils/modal";
+import Chatbot from "../utils/chatbot";
+import Split from "react-split";
+import { CheckCircle } from "lucide-react";
+import { useLocation } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
 
 const LearningPage = () => {
-  const topics = Object.keys(dummyPages);
-
-  const [selectedTopic, setSelectedTopic] = useState(topics[0]);
+  const location = useLocation();
+  const responseData = location.state?.responseData || [];
+  const [selectedTopic, setSelectedTopic] = useState(responseData[0]);
   const [selectedPage, setSelectedPage] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [completedPages, setCompletedPages] = useState([]); // Track completed pages
@@ -38,21 +39,25 @@ const LearningPage = () => {
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <div className="w-64 bg-[#29293D] p-4 overflow-y-auto">
-          <h2 className="text-[#A29BFE] font-semibold mb-4">{selectedTopic}</h2>
-          {dummyPages[selectedTopic].map((page, idx) => (
+          <h2 className="text-[#A29BFE] font-semibold mb-4">Topics</h2>
+          {responseData.map((topic, idx) => (
             <div
               key={idx}
               className={`cursor-pointer mb-3 p-2 rounded bg-[#39395C] text-[#EDEDED] ${
-                completedPages.includes(page.title) ? "bg-[#858585]" : ""
-              }`} // Highlight completed pages
-              onClick={() => handlePageClick(page)}
+                completedPages.includes(topic.topicName) ? "bg-[#858585]" : ""
+              }`}
+              onClick={() => {
+                setSelectedTopic(topic);
+                setSelectedPage({
+                  title: topic.topicName,
+                  content: topic.teacherLearning,
+                });
+                setShowModal(true);
+              }}
             >
-              {page.title}
-              {completedPages.includes(page.title) && (
-                <CheckCircle
-                  className="ml-2 text-green-300"
-                  size={18} // Set icon size
-                />
+              {topic.topicName}
+              {completedPages.includes(topic.topicName) && (
+                <CheckCircle className="inline ml-2 text-green-300" size={18} />
               )}
             </div>
           ))}
@@ -75,13 +80,16 @@ const LearningPage = () => {
             }}
           >
             {/* Learning Content */}
-            <div className="p-6 overflow-y-auto">
+            <div className="p-6 overflow-y-auto scrollbar-hide">
               <h1 className="text-2xl font-bold mb-4 text-[#A29BFE]">
                 {selectedPage.title}
               </h1>
-              <p className="text-[#EDEDED] mb-6">{selectedPage.content}</p>
+              <div className="prose prose-invert max-w-none text-[#EDEDED] mb-6">
+                <ReactMarkdown>{selectedPage.content}</ReactMarkdown>
+              </div>
+
               <button
-                onClick={() => markPageComplete(selectedPage.title)} // Mark the current page as complete
+                onClick={() => markPageComplete(selectedPage.title)}
                 className="px-4 py-2 hover:cursor-pointer bg-green-400 text-[#1E1E2F] rounded-full font-semibold"
               >
                 Mark Page as Complete

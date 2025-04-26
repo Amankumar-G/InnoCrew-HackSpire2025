@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { response } from 'express';
 import wrapAsync from '../utils/wrapAsync.js';
 import { ChatOpenAI } from "@langchain/openai";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
@@ -12,24 +12,25 @@ const model = new ChatOpenAI({
     model: "gpt-4o-mini"
  });
 
-function formatForLLM(userProfile) {
+ function formatForLLM(userProfile) {
+    console.log(userProfile);
     return `
   User Profile:
   
   - Name: ${userProfile.name}
   - Age: ${userProfile.age}
   - Current Field: ${userProfile.currentField}
-  - Current Skills: ${userProfile.currentSkills.join(", ")}
-  - Interest in Learning: ${userProfile.interestInLearning.join(", ")}
+  - Current Skills: ${(userProfile.currentSkills || []).join(",")}
+  - Interest in Learning: ${(userProfile.interestInLearning || []).join(",")}
   - Dream Role or Exam Target: ${userProfile.dreamRoleOrExam}
   - Time Commitment: ${userProfile.timeCommitmentHoursPerWeek} hours per week
   - Major Topic to Focus: ${userProfile.majorTopicToStudy}
   - Preferred Pace: ${userProfile.preferredPace}
-  - Weak Areas: ${userProfile.weakAreas.join(", ")}
+  - Weak Areas: ${(userProfile.weakAreas || []).join(",")}
   - Deadline: ${userProfile.deadline}
-    `
+    `;
   }
-
+  
   const systemTemplate = `You are an AI Learning Path Designer. Your job is to take a student’s profile and craft:
 
   1. **A concise summary** of their background and goals.
@@ -76,23 +77,29 @@ The structure MUST be an array of objects. Each object MUST have exactly these f
 const promptTemplate = ChatPromptTemplate.fromMessages([
     ["system", systemTemplate],
   ]);
-  
-  const userProfile = {
-      name: "Aarav Mehta",
-      age: 21,
-      currentField: "Information Technology",
-      currentSkills: ["C++", "Data Structures", "Basic SQL"],
-      interestInLearning: ["Web Development", "Backend Engineering"],
-      dreamRoleOrExam: "Full Stack Developer at Microsoft",
-      timeCommitmentHoursPerWeek: 12,
-      majorTopicToStudy: "Backend Development",
-      preferredPace: "Fast",
-      weakAreas: ["Database Optimization", "System Design"],
-      deadline: "2025-10-01"
-    };
+
+  function createTopicLearningPairs(data) {
+    const pairs = [];
+    
+    if (data.principleTopics && data.teacherLearning) {
+        const teacherLearnings = data.teacherLearning;
+        
+        for (let i = 0; i < data.principleTopics.length; i++) {
+            const topicName = data.principleTopics[i].name;
+            const teacherLearning = teacherLearnings[i] || "";
+
+            pairs.push({
+                topicName: topicName,
+                teacherLearning: teacherLearning
+            });
+        }
+    }
+    
+    return pairs;
+}
 
   router.post('/path',passport.authenticate('jwt', { session: false }), wrapAsync(async (req, res) => {
-    const{ formdata } = req.body;   
+    const formdata  = req.body;   
     const studentId = req.user._id;
     console.log("Student ID:",  req.body);
     const formated = formatForLLM(formdata);
@@ -132,7 +139,6 @@ router.get('/set',async (req, res) => {
 
 router.get('/topic', passport.authenticate('jwt', { session: false }), wrapAsync(async (req, res) => {
     const studentId = req.user._id;
-    // const {index} = req.session;
     const index = req.session.index || 1; // Default to 0 if index is not set in session  
     console.log("index", index);    
     const student = await Student.findOne({
@@ -143,11 +149,12 @@ router.get('/topic', passport.authenticate('jwt', { session: false }), wrapAsync
     });
 
     const finalresponce =await runTeaching(student.learningPath[0].subtopic_name, student.learningPath[0].goal_statement, student.learningPath[0].key_deliverables);
-    
+    const topicLearningPairs = createTopicLearningPairs(finalresponce);
+    console.log(topicLearningPairs);
+    req.session.index = index + 1; 
     res.status(200).json({
         message: 'Learning path fetched successfully',
-        data: student.learningPath[0],
-        responce: finalresponce
+        response: topicLearningPairs
     });
 }));
 

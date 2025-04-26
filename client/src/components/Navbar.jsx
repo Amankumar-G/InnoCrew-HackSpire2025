@@ -1,10 +1,34 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useUser } from '../context/UserContext'; // adjust the path if needed
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { user, setUser } = useUser();
+
+  // Check if the user is logged in (via JWT in localStorage) on component mount
+  useEffect(() => {
+    const token = localStorage.getItem('authToken'); // Retrieve the token from localStorage
+    if (token) {
+      // If token exists, set the user (assuming you have a function to get user info based on token)
+      // Example: Decode the token or fetch user details from the backend if needed
+      const userData = decodeToken(token);  // You could use a library like `jwt-decode` to decode the token if needed
+      setUser(userData); // Set the user context with decoded token data or user object
+    } else {
+      setUser(null); // If no token, clear the user context
+    }
+  }, [setUser]);
+
+  // Function to decode JWT (example, you can install `jwt-decode` if needed)
+  function decodeToken(token) {
+    try {
+      const decoded = JSON.parse(atob(token.split('.')[1])); // Basic decoding (replace with proper decoding if needed)
+      return decoded;
+    } catch (error) {
+      console.error('Token decoding failed:', error);
+      return null;
+    }
+  }
 
   function login() {
     navigate('/login');
@@ -13,7 +37,7 @@ const Navbar = () => {
   function logout() {
     // Clear user context and token
     setUser(null);
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('authToken'); // Remove the token from localStorage
     navigate('/login');
   }
 
@@ -29,7 +53,7 @@ const Navbar = () => {
         {user && (
           <>
             <button 
-              onClick={() => navigate('/dead-and-dumb')} 
+              onClick={() => navigate('/deaf-and-dumb')} 
               className="text-[#EDEDED] hover:text-[#A29BFE] transition-all"
             >
               Deaf and dumb

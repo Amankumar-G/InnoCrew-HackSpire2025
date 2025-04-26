@@ -18,7 +18,7 @@ import './App.css';
 // 👇 A new component to use useLocation inside Router
 const AppContent = () => {
   const location = useLocation();
-  const hideFooterRoutes = ["/pdf-assistant", "/dashboard"];
+  const hideFooterRoutes = ["/pdf-assistant", "/dashboard", "/start"];
 
   return (
 <div className="bg-[#1E1E2F] min-h-screen flex flex-col font-poppins text-[#EDEDED]">
