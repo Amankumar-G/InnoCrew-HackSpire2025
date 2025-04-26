@@ -1,7 +1,7 @@
 export default function SignupPage() {
     return (
       <main className="min-h-screen bg-[#1E1E2F] font-poppins flex items-center justify-center scroll-smooth pt-[6%]">
-        <div className="bg-[#29293D] rounded-2xl shadow-2xl p-10 w-full max-w-md">
+        <div className="bg-[#29293D] rounded-xl shadow-2xl p-8 w-full max-w-md">
           <h1 className="text-4xl font-bold text-center text-[#E0E6F8] mb-8">
             Create Your Account
           </h1>
@@ -16,7 +16,7 @@ export default function SignupPage() {
                 id="name"
                 type="text"
                 placeholder="Enter your name"
-                className="w-full rounded-2xl bg-[#1E1E2F] text-white p-4 text-base focus:outline-none focus:ring-2 focus:ring-[#6C63FF] shadow-md"
+                className="w-full rounded-xl bg-[#1E1E2F] text-white p-4 text-base focus:outline-none focus:ring-2 focus:ring-[#A0C4FF] shadow-md"
               />
             </div>
   
@@ -29,7 +29,7 @@ export default function SignupPage() {
                 id="email"
                 type="email"
                 placeholder="Enter your email"
-                className="w-full rounded-2xl bg-[#1E1E2F] text-white p-4 text-base focus:outline-none focus:ring-2 focus:ring-[#6C63FF] shadow-md"
+                className="w-full rounded-xl bg-[#1E1E2F] text-white p-4 text-base focus:outline-none focus:ring-2 focus:ring-[#A0C4FF] shadow-md"
               />
             </div>
   
@@ -42,7 +42,7 @@ export default function SignupPage() {
                 id="password"
                 type="password"
                 placeholder="Create a password"
-                className="w-full rounded-2xl bg-[#1E1E2F] text-white p-4 text-base focus:outline-none focus:ring-2 focus:ring-[#6C63FF] shadow-md"
+                className="w-full rounded-xl bg-[#1E1E2F] text-white p-4 text-base focus:outline-none focus:ring-2 focus:ring-[#A0C4FF] shadow-md"
               />
             </div>
   
@@ -55,7 +55,7 @@ export default function SignupPage() {
                 id="age"
                 type="number"
                 placeholder="Enter your age"
-                className="w-full rounded-2xl bg-[#1E1E2F] text-white p-4 text-base focus:outline-none focus:ring-2 focus:ring-[#6C63FF] shadow-md"
+                className="w-full rounded-xl bg-[#1E1E2F] text-white p-4 text-base focus:outline-none focus:ring-2 focus:ring-[#A0C4FF] shadow-md"
               />
             </div>
   
@@ -64,7 +64,7 @@ export default function SignupPage() {
               <input
                 id="deafMute"
                 type="checkbox"
-                className="w-5 h-5 rounded-2xl bg-[#1E1E2F] text-[#6C63FF] focus:ring-2 focus:ring-[#6C63FF]"
+                className="w-5 h-5 rounded-xl bg-[#1E1E2F] text-[#6C63FF] focus:ring-2 focus:ring-[#A0C4FF]"
               />
               <label htmlFor="deafMute" className="text-[#B8BAD0] text-base">
                 I am a deaf or mute student

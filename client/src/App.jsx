@@ -1,28 +1,34 @@
-import React from 'react';
-import Navbar from './components/Navbar';
-import Home from './components/Home';
-import Footer from './components/Footer';
-import {UserProvider} from './context/userContext';
+import React from "react";
+import Navbar from "./components/Navbar";
+import Home from "./components/Home";
+import Footer from "./components/Footer";
+import { UserProvider } from "./context/userContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LoginPage from './components/Authentication/Login';
-import SignUpPage from './components/Authentication/SignUp';
+import LoginPage from "./components/Authentication/Login";
+import SignUpPage from "./components/Authentication/SignUp";
+import QuizzesPage from "./components/Features/Quiz";
+import PathsPage from "./components/Features/Paths";
+import PdfAssistantPage from "./components/Features/Pdf";
 
 const App = () => {
   return (
     <UserProvider>
       <Router>
-    <div className="bg-[#1E1E2F] min-h-screen font-poppins text-[#EDEDED]">
-      <Navbar />
-      <main className="flex-grow">
+        <div className="bg-[#1E1E2F] min-h-screen font-poppins text-[#EDEDED]">
+          <Navbar />
+          <main className="flex-grow">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignUpPage />} />
+              <Route path="/signup" element={<SignUpPage />} />\
+              <Route path="/quizzes" element={<QuizzesPage />} />
+              <Route path="/pdf-assistant" element={<PdfAssistantPage />} />
+              <Route path="/paths" element={<PathsPage />} />
             </Routes>
           </main>
-      <Footer />
-    </div>
-    </Router>
+          <Footer />
+        </div>
+      </Router>
     </UserProvider>
   );
 };
