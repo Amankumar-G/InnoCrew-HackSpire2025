@@ -15,6 +15,7 @@ import './config/mongodb.js';
 import { displayStartupMessage } from './config/start.js';
 import passportConfig from './config/passport.js';
 import studentRoute from './Router/student.js';
+import learningPathRoute from './Router/learningPath.js';
 import { initializeSocket, io } from './config/socket.js';
 
 // Display startup banner
@@ -126,6 +127,7 @@ app.get('/metrics', async (req, res) => {
 
 // Use Routes
 app.use('/student', studentRoute);
+app.use('/learning-path', learningPathRoute);
 
 // Root Route
 app.get('/', (req, res) => {
