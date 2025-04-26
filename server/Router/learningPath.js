@@ -132,8 +132,8 @@ router.get('/set',async (req, res) => {
 
 router.get('/topic', passport.authenticate('jwt', { session: false }), wrapAsync(async (req, res) => {
     const studentId = req.user._id;
-    const {index} = req.session;
-
+    // const {index} = req.session;
+    const index = req.session.index || 1; // Default to 0 if index is not set in session  
     console.log("index", index);    
     const student = await Student.findOne({
         _id: studentId,
@@ -142,7 +142,7 @@ router.get('/topic', passport.authenticate('jwt', { session: false }), wrapAsync
         "learningPath.$": index
     });
 
-    const finalresponce = runTeaching(student.learningPath[0].subtopic_name, student.learningPath[0].goal_statement, student.learningPath[0].key_deliverables);
+    const finalresponce =await runTeaching(student.learningPath[0].subtopic_name, student.learningPath[0].goal_statement, student.learningPath[0].key_deliverables);
     
     res.status(200).json({
         message: 'Learning path fetched successfully',
@@ -150,5 +150,9 @@ router.get('/topic', passport.authenticate('jwt', { session: false }), wrapAsync
         responce: finalresponce
     });
 }));
+
+
+
+
 
 export default router;

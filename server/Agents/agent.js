@@ -17,7 +17,7 @@ const TeacherLLm = new ChatOpenAI({ modelName: "gpt-4o-mini", temperature: 0.1 }
 async function principle(state) {
   console.log("\n===Principle ANALYSIS STARTED ===");
   io.emit("message", "\n=== Principle ANALYSIS STARTED ===");
-  
+  console.log(state)
   const prompt = principlePrompt;
   const chain = prompt.pipe(principleLLM);
   const response = await chain.invoke(state);
@@ -99,7 +99,12 @@ async function runTeaching(Topic_Name, goal_statement, key_deliverables) {
     workflow.addEdge("teacher", END);
   
     const app = workflow.compile();
-    const finalState = await app.invoke({});
+    const finalState = await app.invoke({
+      Topic_Name,
+      goal_statement,
+      key_deliverables,
+    });
+    
     return finalState;
   }
   
