@@ -17,6 +17,16 @@ const PdfAssistantPage = () => {
 
   const chatEndRef = useRef(null); // Reference for the end of the chat container
 
+  // const handleFileChange = (e) => {
+  //   if (e.target.files[0]) {
+  //     setFile(e.target.files[0]);
+  //   }
+
+  //   const formData = FormData(file,"pdf");
+  //   axios.post("http://localhost:5000/upload/one", formData).then(res=>console.log(res));
+
+  // };
+
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (!selectedFile) return;
