@@ -9,6 +9,7 @@ const queue = new Queue("file-upload-queue",{
 );
  
 export const singlepdf = async (req, res) => {
+    console.log(req.file)
    await queue.add("file-ready",JSON.stringify({
         filename : req.file.originalname,
         destination: req.file.destination,
