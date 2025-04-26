@@ -6,46 +6,87 @@ const PdfAssistantPage = () => {
   const [file, setFile] = useState(null);
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState([]);
-
-  const randomAnswers = [
-    "This looks super interesting! 📚 Let me dive into it and get you the best answer!",
-    "I'll get back to you on that! 🤔 It needs a bit more thought.",
-    "Here's something you might find useful! Let’s explore it together!",
-    "Good question! Let me think about it carefully and I'll explain in a moment...",
-    "Based on your file, here's what I understand so far — and it's quite fascinating! 🔍",
-  ];
+  const [randomAnswers,setRandomAnswer] = useState([]);
+  // const randomAnswers = [
+  //   "This looks super interesting! 📚 Let me dive into it and get you the best answer!",
+  //   "I'll get back to you on that! 🤔 It needs a bit more thought.",
+  //   "Here's something you might find useful! Let’s explore it together!",
+  //   "Good question! Let me think about it carefully and I'll explain in a moment...",
+  //   "Based on your file, here's what I understand so far — and it's quite fascinating! 🔍",
+  // ];
 
   const chatEndRef = useRef(null); // Reference for the end of the chat container
 
   const handleFileChange = (e) => {
-    if (e.target.files[0]) {
-      setFile(e.target.files[0]);
-    }
+    const selectedFile = e.target.files[0];
+    if (!selectedFile) return;
 
-    const formData = FormData(file,"pdf");
-    axios.post("http://localhost:5000/upload/one", formData).then(res=>console.log(res));
+    const formData = new FormData();
+    formData.append('pdf', selectedFile);  // use selectedFile directly!
 
-  };
+    console.log(formData.get('pdf')); // to check if file is there properly
 
-  const handleSend = () => {
+    axios.post("http://localhost:5000/upload/one", formData)
+      .then(res => {console.log(res);
+        setFile(selectedFile);
+      })
+      .catch(err => console.error(err));
+};
+
+const handleSend = () => {
+  if (!question.trim()) return;
+  setMessages((prev) => [
+    ...prev,
+    { type: "user", text: question },
+    // { type: "bot", text: botResponse },
+  ]);
+
+  setQuestion(""); // Clear the input
+
+  axios.post("http://localhost:5000/chat", { userQuery: question })
+    .then(res => {
+      console.log(res);
+
+      const botResponse = res.data.message || "No response"; // assuming your backend sends { answer: "..." }
+
+      // Update messages after getting the bot reply
+      setMessages((prev) => [
+        ...prev,
+        // { type: "user", text: question },
+        { type: "bot", text: botResponse },
+      ]);
+
+      // Update randomAnswer correctly (if you still need it)
+      setRandomAnswer(prev => [...prev, "helo"]);
+      
+    
+    })
+    .catch(err => {
+      console.error(err);
+    });
+};
+
+
+  // const handleSend = () => {
 
 
 
-    // if (!question.trim()) return;
+  //   // if (!question.trim()) return;
 
-    // const randomAnswer =
-    //   randomAnswers[Math.floor(Math.random() * randomAnswers.length)];
-    axios.post("http://localhost:5000/chat", { userQuery:question }).then(res=>console.log(res));
-    setMessages((prev) => [
-      ...prev,
-      { type: "user", text: question },
-      { type: "bot", text: randomAnswer },
-    ]);
-    setQuestion("");
-  };
+  //   // const randomAnswer =
+  //   //   randomAnswers[Math.floor(Math.random() * randomAnswers.length)];
+  //   axios.post("http://localhost:5000/chat", { userQuery:question }).then(res=>{console.log(res);
+  //     setRandomAnswer([...prev,res.data.message])
+  //   });
+  //   setMessages((prev) => [
+  //     ...prev,
+  //     { type: "user", text: question },
+  //     { type: "bot", text: randomAnswers },
+  //   ]);
+  //   setQuestion("");
+  // };
 
   useEffect(() => {
-    // Scroll to the last user message whenever messages change
     if (chatEndRef.current) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
     }
