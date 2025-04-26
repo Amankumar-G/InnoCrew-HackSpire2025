@@ -12,6 +12,7 @@ import Dashboard from "./components/Features/Dashboard";
 import UserProfileForm from "./components/Features/UserProfileForm";
 import ResponsePage from "./components/Features/ResponsePage";
 import LearningPage from "./components/Features/StartPage";
+import DeafAndDumb from "./components/Features/DeadAndDumb";
 import './App.css';
 
 // 👇 A new component to use useLocation inside Router
@@ -36,6 +37,7 @@ const AppContent = () => {
       <Route path="/response" element={<ResponsePage />} />
       <Route path="/start" element={<LearningPage />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/deaf-and-dumb" element={<DeafAndDumb />} />
     </Routes>
   </main>
   
