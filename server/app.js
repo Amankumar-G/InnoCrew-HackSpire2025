@@ -14,9 +14,7 @@ import cors from './config/corsConfig.js';
 import './config/mongodb.js';
 import { displayStartupMessage } from './config/start.js';
 import passportConfig from './config/passport.js';
-import userRoutes from './Router/user.js';
-import uploadRouter from './Router/upload.js';
-import backRouter from "./Router/Back.js"
+import studentRoute from './Router/student.js';
 import { initializeSocket, io } from './config/socket.js';
 
 // Display startup banner
@@ -127,9 +125,7 @@ app.get('/metrics', async (req, res) => {
 });
 
 // Use Routes
-app.use("/frontend", uploadRouter);
-app.use("/backend", backRouter);
-app.use('/user', userRoutes);
+app.use('/student', studentRoute);
 
 // Root Route
 app.get('/', (req, res) => {
