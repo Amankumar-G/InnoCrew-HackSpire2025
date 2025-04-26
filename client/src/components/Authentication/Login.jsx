@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../../context/userContext";
+import { useUser } from "../../context/UserContext";
 import axios from "axios"; // Import Axios
 const LoginPage = () => {
   const { setUser } = useUser();
@@ -23,9 +23,9 @@ const LoginPage = () => {
       const { token } = response.data;
       console.log("Login successful:", response.data);
       if (token) {
-        localStorage.setItem("authToken", token);  // 🛑 Save token in storage
-        setUser(email);                             // 🛑 Set user in context (optional: whatever your backend sends)
-        navigate("/");                             // 🛑 Redirect to home
+        localStorage.setItem("authToken", token);
+        setUser(email);
+        navigate("/dashboard");
       } else {
         alert("Login failed. No token received.");
       }

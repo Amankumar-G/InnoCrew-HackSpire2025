@@ -1,7 +1,11 @@
 import { useState } from "react";
 import axios from "axios";
+import {useNavigate} from 'react-router-dom';
+import { useUser } from "../../context/UserContext";
 
 export default function SignupPage() {
+  const { setUser } = useUser();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,6 +24,7 @@ export default function SignupPage() {
   };
 
   const handleSubmit = async (e) => {
+    const navigate = useNavigate();
     e.preventDefault();
   
     try {
@@ -32,6 +37,7 @@ export default function SignupPage() {
       });
   
       console.log("Signup successful:", response.data);
+      navigate('/')
   
       // Assuming response.data.token contains the token
       if (response.data.token) {
@@ -40,9 +46,17 @@ export default function SignupPage() {
       } else {
         console.warn("No token received in response.");
       }
-  
-      // Optionally, redirect user or show success
-      // Example: navigate("/dashboard");
+       
+      setUser({
+        name: formData.name,
+        email: formData.email,
+        username: formData.username,
+        age: formData.age,
+        deafMute: formData.deafMute,
+        token: response.data.token, // if you want to keep the token too
+      });
+      navigate('/dashboard');
+
     } catch (error) {
       console.error("Signup failed:", error.response?.data || error.message);
       // Optionally show error message to user
