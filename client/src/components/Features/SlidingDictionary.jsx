@@ -28,14 +28,14 @@ const SlidingDictionary = ({handleWord}) => {
   );
 
   return (
-    <div className="w-full max-w-screen-lg p-6 rounded-lg text-black shadow-lg bg-blue-100 h-auto wr">
+    <div className="w-full max-w-screen-lg p-6 rounded-lg shadow-[#A29BFE] text-white shadow  h-auto wr">
       <h3 className="text-xl sm:block hidden font-semibold mb-3">Dictionary of words</h3>
       <input
         type="text"
         placeholder="Search for a word..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="w-full p-3 mb-4 rounded text-black focus:outline-none focus:ring-2 ring-1 ring-gray-400 focus:ring-gray-500"
+        className="w-full p-3 mb-4 rounded text-white focus:outline-none focus:ring-2 ring-1 ring-gray-400 focus:ring-gray-500"
       />
       <div className="h-96  overflow-y-auto space-y-2 custom-scrollbar">
         {loading ? (
@@ -46,7 +46,8 @@ const SlidingDictionary = ({handleWord}) => {
             {filteredWords.map((item, index) => (
               <div
                 key={index} 
-                className="shadow border border-gray-300 bg-blue-50 p-3 break-words rounded hover:scale-2 hover:bg-blue-400 cursor-pointer transition-colors duration-300"
+                className="shadow border border-gray-600 p-3 break-words rounded  hover:bg-gray-700 cursor-pointer transition-colors duration-300"
+                onMouseDown={(e) => e.preventDefault()} // ADD THIS LINE
                 onClick={() => handleClick(item.sign_name)} 
               >
                 {item.sign_name}

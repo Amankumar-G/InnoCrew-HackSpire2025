@@ -4,10 +4,7 @@ import Conversion1 from './Conversion1';
 // import { signin, userContext } from '../context/CreateContext';
 
 export default function DeafAndDumb() {
-  // const [sign, setSign] = useContext(signin);
   const user = {name:"avani"};
-
-  // useEffect(() => setSign(true), [setSign]);
 
   return user.name ? (
     <Conversion1 />

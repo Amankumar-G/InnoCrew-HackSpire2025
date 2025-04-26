@@ -41,7 +41,7 @@ export default function TextToSign({ handleClick }) {
       {/* Hamburger menu for small screens */}
       <button
         onClick={toggleDictionary}
-        className="sm:hidden block border border-b-2  shadow-md bg-blue-100 mb-2 sm:text-xl font-bold px-4 py-2 h-12 mt-5 rounded-lg focus:outline-none"
+        className="sm:hidden block border border-b-2  shadow-md mb-2 sm:text-xl font-bold px-4 py-2 h-12 mt-5 rounded-lg focus:outline-none"
       >
         Dictionary ⬇️ {/* Three-line hamburger icon */}
       </button>
@@ -53,10 +53,10 @@ export default function TextToSign({ handleClick }) {
 
       <div className='md:basis-1/2 flex flex-col justify-center items-center p-5'>
         <div className='flex md:justify-between md:w-96 w-auto gap-24 px-4'>
-          <button onClick={handleClick} className='font-bold sm:text-xl'>
+          <button onClick={handleClick} className='font-bold hover:cursor-pointer sm:text-xl'>
             Back
           </button>
-          <button onClick={resetSelection} className='font-bold sm:text-xl'>
+          <button onClick={resetSelection} className='font-bold hover:cursor-pointer sm:text-xl'>
             Stop
           </button>
         </div>
@@ -69,7 +69,7 @@ export default function TextToSign({ handleClick }) {
           disabled
         />
 
-        <button onClick={generateSignImage} className='mt-4 p-2 bg-blue-500 text-white'>
+        <button onClick={generateSignImage} className='mt-4 p-2 bg-purple-900 hover:cursor-pointer rounded text-white'>
           Convert to Sign Image
         </button>
 
@@ -78,12 +78,14 @@ export default function TextToSign({ handleClick }) {
             <img src={signImage} alt='Sign' className='size-96 w-screen md:w-96' />
           </div>
         ) : (
-          <div className='mt-4 p-2 border'>
-           
-            <div className='shadow-md flex flex-col justify-center items-center border size-96 sm:w-96 w-auto px-10 text-center'>
-            {word &&  <img src='/ImagesNV/load.gif' className='h-44 w-48'></img>}
-              Result will be generated here..
-            </div>
+          <div className='mt-4 p-2 border rounded'>
+           {word ? <div className='shadow-md flex flex-col justify-center items-center border gap-3  size-96 sm:w-96 w-auto px-10 text-center'>
+                <img src='/upArrow.jpeg' className='size-28 rounded-full'></img>
+             Click on convert to sign...
+            </div>:<div className='shadow-md flex flex-col justify-center items-center border gap-3  size-96 sm:w-96 w-auto px-10 text-center'>
+              
+               Result will be Generated here...  
+            </div>}
           </div>
         )}
       </div>
