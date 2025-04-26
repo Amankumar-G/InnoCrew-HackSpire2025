@@ -1,0 +1,27 @@
+/* Modern slim scrollbar for Webkit browsers (Chrome, Safari, Opera) */
+.chat-container {
+    overflow-y: auto; /* Enable vertical scrolling */
+    height: 70vh; /* Define the height */
+    scrollbar-width: thin; /* Firefox: thin scrollbar */
+    scrollbar-color: #A29BFE #29293D; /* Firefox: thumb color and track color */
+  }
+  
+  /* For Webkit browsers */
+  .chat-container::-webkit-scrollbar {
+    width: 8px; /* Set the width of the scrollbar */
+  }
+  
+  .chat-container::-webkit-scrollbar-thumb {
+    background-color: #A29BFE; /* Color of the scrollbar thumb */
+    border-radius: 10px; /* Rounded corners for the thumb */
+  }
+  
+  .chat-container::-webkit-scrollbar-track {
+    background-color: #29293D; /* Color of the track behind the thumb */
+    border-radius: 10px; /* Rounded corners for the track */
+  }
+  
+  .chat-container::-webkit-scrollbar-thumb:hover {
+    background-color: #7f73ff; /* Darken thumb color when hovered */
+  }
+  
