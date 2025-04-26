@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -20,6 +21,7 @@ export default function SignupPage() {
   };
 
   const handleSubmit = async (e) => {
+    const navigate = useNavigate();
     e.preventDefault();
   
     try {
@@ -32,6 +34,7 @@ export default function SignupPage() {
       });
   
       console.log("Signup successful:", response.data);
+      navigate('/')
   
       // Assuming response.data.token contains the token
       if (response.data.token) {
