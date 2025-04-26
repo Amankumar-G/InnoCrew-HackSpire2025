@@ -73,13 +73,59 @@ app.post('/clear', async (req, res) => {
   if (!chatbot) {
     return res.status(400).json({ error: 'Chatbot is not initialized. Call /initialize first.' });
   }
+  const { page } = req.body;
+  const message = `Act as a master question generator. Using the student's past memory and the topic "${page}", create exactly 5 different multiple-choice questions (MCQs).
+Each question must have 4 options labeled "A", "B", "C", "D", and only one correct answer.
+Output strictly and only the following JSON format. Do not include any explanation, comments, or additional text. Only output the JSON:
 
-  try {
-    await chatbot.memory.clear();
-    res.json({ message: 'Chatbot memory cleared.' });
-  } catch (error) {
-    res.status(500).json({ error: 'Error clearing memory', details: error.message });
-  }
+json
+Copy
+Edit
+{
+  "quiz": [
+    {
+      "question": "Your question here",
+      "options": {
+        "A": "Option A",
+        "B": "Option B",
+        "C": "Option C",
+        "D": "Option D"
+      },
+      "correct_option": "A"
+    },
+    {
+      "question": "Your question here",
+      "options": {
+        "A": "Option A",
+        "B": "Option B",
+        "C": "Option C",
+        "D": "Option D"
+      },
+      "correct_option": "C"
+    },
+    ...
+  ]
+}
+Remember: Only output the JSON exactly in this format, no extra text.`
+
+try {
+  const response = await chatbot.call({ input: message });
+  await chatbot.memory.clear(); 
+
+  // Remove the triple backticks and optional 'json' tag
+  const cleanedString = response.response
+    .replace(/^```json\s*/i, '')  // Remove starting ```json
+    .replace(/^```/, '')          // Just in case it’s ``` without json
+    .replace(/```$/, '')          // Remove ending ```
+    .trim();                      // Trim spaces/newlines
+
+  const clean = JSON.parse(cleanedString);
+
+  res.json({ response: clean });
+} catch (error) {
+  res.status(500).json({ error: 'Error processing response', details: error.message });
+}
+
 });
 
 // Start server
