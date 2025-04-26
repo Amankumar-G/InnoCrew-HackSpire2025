@@ -9,8 +9,8 @@ const Home = () => {
 
   const drawChart = () => {
     const data = [
-      { system: "Traditional", score: 58 },
-      { system: "Learnify", score: 92 },
+      { x: 0, y: 58 },
+      { x: 1, y: 92 },
     ];
 
     const svg = d3.select("#chart").attr("width", 400).attr("height", 300);
@@ -23,71 +23,72 @@ const Home = () => {
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    const x = d3
-      .scaleBand()
-      .domain(data.map((d) => d.system))
-      .rangeRound([0, width])
-      .padding(0.3);
+    const x = d3.scaleLinear().domain([0, 1]).range([0, width]);
+    const y = d3.scaleLinear().domain([0, 100]).range([height, 0]);
 
-    const y = d3.scaleLinear().domain([0, 100]).rangeRound([height, 0]);
+    const line = d3
+      .line()
+      .x((d) => x(d.x))
+      .y((d) => y(d.y))
+      .curve(d3.curveMonotoneX);
 
-    g.append("g")
-      .attr("transform", `translate(0,${height})`)
-      .call(d3.axisBottom(x))
-      .selectAll("text")
-      .attr("fill", "#EDEDED");
+    g.append("path")
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", "#7F5AF0")
+      .attr("stroke-width", 4)
+      .attr("d", line);
 
-    g.append("g")
-      .call(d3.axisLeft(y))
-      .selectAll("text")
-      .attr("fill", "#EDEDED");
-
-    g.selectAll(".bar")
+    g.selectAll(".dot")
       .data(data)
       .enter()
-      .append("rect")
-      .attr("class", "bar")
-      .attr("x", (d) => x(d.system))
-      .attr("y", (d) => y(d.score))
-      .attr("width", x.bandwidth())
-      .attr("height", (d) => height - y(d.score))
-      .attr("fill", (d, i) => (i === 0 ? "#FFD6A5" : "#A0C4FF")); // pastel colors
+      .append("circle")
+      .attr("cx", (d) => x(d.x))
+      .attr("cy", (d) => y(d.y))
+      .attr("r", 6)
+      .attr("fill", "#FFD6A5")
+      .attr("stroke", "#7F5AF0")
+      .attr("stroke-width", 2);
   };
 
-  // Framer Motion variant
   const fadeUp = {
     hidden: { opacity: 0, y: 50 },
     visible: { opacity: 1, y: 0 },
   };
 
-  return (
-    <div className="p-6 space-y-20">
-      {/* Hero Section with Glass Effect */}
-      <div
-        className="relative grid md:grid-cols-2 gap-12 items-center min-h-[80vh] overflow-hidden backdrop-blur-md rounded-2xl shadow-2xl p-10"
-        style={{
-          background:
-            "linear-gradient(135deg, rgba(240, 240, 240, 0.2), rgba(200, 230, 255, 0.3))",
-        }}
-      >
-        {/* Glow Effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#f0f0f033] to-[#c8e6ff80] rounded-2xl blur-2xl opacity-30"></div>
+  const neonGlow = {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 1 } },
+  };
 
-        {/* Content Layer */}
-        <div className="relative z-10 flex flex-col justify-center">
-          <h1 className="text-5xl font-bold mb-6 text-[#FFD6A5]">
-            Unlock Your True Potential
+  return (
+    <div className="p-6 space-y-20 font-poppins text-white bg-[#1A1B2F]">
+      {/* Hero Section with Futuristic Glow */}
+      <motion.div
+        variants={neonGlow}
+        initial="hidden"
+        animate="visible"
+        className="relative overflow-hidden rounded-2xl shadow-2xl min-h-[80vh] grid md:grid-cols-2 gap-12 items-center p-10 bg-gradient-to-br from-[#1A1B2F] to-[#2E335A]"
+      >
+        {/* Background Animated Blobs */}
+        <div className="absolute w-96 h-96 bg-[#7F5AF0] opacity-20 rounded-full top-[-100px] left-[-100px] blur-3xl animate-pulse"></div>
+        <div className="absolute w-80 h-80 bg-[#FFD6A5] opacity-20 rounded-full bottom-[-80px] right-[-80px] blur-3xl animate-pulse"></div>
+
+        {/* Text Content */}
+        <div className="relative z-10 space-y-6">
+          <h1 className="text-5xl md:text-6xl font-bold leading-tight text-[#E0E6F8]">
+            Unlock Your <span className="text-[#7F5AF0]">True Potential</span>
           </h1>
-          <p className="text-2xl text-[#C0C0C0] max-w-md">
-            "Every student deserves a learning path as unique as their dreams."
+          <p className="text-2xl text-[#C0C0C0]">
+            "Every student deserves a path as unique as their dreams."
           </p>
         </div>
 
-        {/* Graph */}
+        {/* Futuristic Graph */}
         <div className="relative z-10 flex justify-center">
           <svg id="chart"></svg>
         </div>
-      </div>
+      </motion.div>
 
       {/* Features Section */}
       <motion.div
@@ -98,35 +99,21 @@ const Home = () => {
         transition={{ duration: 0.6 }}
       >
         <h2 className="mb-8 text-3xl font-bold text-center">Key Features</h2>
-        <div className="grid gap-6 text-center md:grid-cols-3">
-          <div className="bg-[#29293D] p-6 rounded-lg shadow-lg">
-            <h3 className="text-xl font-semibold mb-2 text-[#A29BFE]">
-              Smart Quiz Generator
-            </h3>
-            <p className="text-[#C0C0C0]">
-              Automatically create quizzes based on student progress.
-            </p>
-          </div>
-          <div className="bg-[#29293D] p-6 rounded-lg shadow-lg">
-            <h3 className="text-xl font-semibold mb-2 text-[#A29BFE]">
-              Simplified Learning Content
-            </h3>
-            <p className="text-[#C0C0C0]">
-              Complex concepts broken into easy-to-digest modules.
-            </p>
-          </div>
-          <div className="bg-[#29293D] p-6 rounded-lg shadow-lg">
-            <h3 className="text-xl font-semibold mb-2 text-[#A29BFE]">
-              Inclusive Access
-            </h3>
-            <p className="text-[#C0C0C0]">
-              Sign language to text support for deaf and mute learners.
-            </p>
-          </div>
+        <div className="grid gap-6 md:grid-cols-3 text-center">
+          {[
+            { title: "Smart Quiz Generator", desc: "Auto create quizzes based on student growth." },
+            { title: "Simplified Content", desc: "Complex ideas made simple and intuitive." },
+            { title: "Inclusive Learning", desc: "Support for deaf and mute students." },
+          ].map((feature, i) => (
+            <div key={i} className="bg-[#29293D] hover:bg-[#353552] transition p-6 rounded-2xl shadow-md">
+              <h3 className="text-xl font-semibold mb-2 text-[#A29BFE]">{feature.title}</h3>
+              <p className="text-[#C0C0C0]">{feature.desc}</p>
+            </div>
+          ))}
         </div>
       </motion.div>
 
-      {/* Testimonials */}
+      {/* Testimonials Section */}
       <motion.div
         variants={fadeUp}
         initial="hidden"
@@ -134,20 +121,19 @@ const Home = () => {
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.2 }}
       >
-        <h2 className="mb-8 text-3xl font-bold text-center">
-          What Students Say
-        </h2>
+         <h2 className="mb-8 text-3xl font-bold text-center">
+           What Students Say
+         </h2>
         <div className="grid gap-8 md:grid-cols-2">
-          <div className="bg-[#29293D] p-6 rounded-lg shadow-lg">
+          <div className="bg-[#29293D] p-6 rounded-2xl shadow-md">
             <p className="italic text-[#CCCCCC]">
-              "Learnify helped me understand difficult topics in ways my school
-              never could!"
+              "Learnify made learning enjoyable and clear!"
             </p>
             <div className="mt-4 font-semibold text-[#A29BFE]">- Sarah K.</div>
           </div>
-          <div className="bg-[#29293D] p-6 rounded-lg shadow-lg">
+          <div className="bg-[#29293D] p-6 rounded-2xl shadow-md">
             <p className="italic text-[#CCCCCC]">
-              "The quizzes are so personalized it feels like a private tutor."
+              "Quizzes are so personalized it feels like a private tutor."
             </p>
             <div className="mt-4 font-semibold text-[#A29BFE]">- Anuj P.</div>
           </div>
@@ -162,11 +148,10 @@ const Home = () => {
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.4 }}
       >
-        <div className="mt-16 space-y-4 text-center">
+        <div className="text-center space-y-4 mt-20">
           <h2 className="text-3xl font-bold">Our Vision</h2>
           <p className="text-[#C0C0C0] max-w-2xl mx-auto">
-            We envision a future where learning is not bound by traditional
-            barriers — every student learns their way, at their pace.
+            We envision a future where learning is limitless and personalized.
           </p>
         </div>
       </motion.div>
