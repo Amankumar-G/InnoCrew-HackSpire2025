@@ -63,7 +63,7 @@ export default function SmartQuizSingle() {
   };
 
   return (
-    <main className="min-h-screen bg-[#1E1E2F] font-poppins flex flex-col items-center justify-center p-6 scroll-smooth">
+    <main className="mt-[5%] bg-[#1E1E2F] font-poppins flex flex-col items-center justify-center p-6 scroll-smooth">
       <div className="bg-[#2D2A4A] rounded-2xl shadow-2xl p-8 w-full max-w-xl">
         
         {!showScore ? (
