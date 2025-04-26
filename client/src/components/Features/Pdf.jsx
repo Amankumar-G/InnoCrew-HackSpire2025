@@ -18,14 +18,21 @@ const PdfAssistantPage = () => {
   const chatEndRef = useRef(null); // Reference for the end of the chat container
 
   const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (!selectedFile) return;
     if (e.target.files[0]) {
       setFile(e.target.files[0]);
     }
+    const formData = new FormData();
+    formData.append('pdf', selectedFile);  // use selectedFile directly!
 
-    const formData = FormData(file,"pdf");
-    axios.post("http://localhost:5000/upload/one", formData).then(res=>console.log(res));
+    console.log(formData.get('pdf')); // to check if file is there properly
 
-  };
+    axios.post("http://localhost:5000/upload/one", formData)
+      .then(res => console.log(res))
+      .catch(err => console.error(err));
+};
+  
 
   const handleSend = () => {
 
@@ -33,9 +40,9 @@ const PdfAssistantPage = () => {
 
     // if (!question.trim()) return;
 
-    // const randomAnswer =
+    let randomAnswer
     //   randomAnswers[Math.floor(Math.random() * randomAnswers.length)];
-    axios.post("http://localhost:5000/chat", { userQuery:question }).then(res=>console.log(res));
+    axios.post("http://localhost:5000/chat", { userQuery:question }).then(res=>randomAnswer=res);
     setMessages((prev) => [
       ...prev,
       { type: "user", text: question },
@@ -52,8 +59,24 @@ const PdfAssistantPage = () => {
   }, [messages]); // Triggered every time the messages array changes
 
   return (
-    <div className="bg-[#1E1E2F] p-8">
+    <div className="bg-[#1E1E2F] p-8 flex w-full gap-5">
+      <div className="w-[25%] border-dashed border-2 rounded-xl h-[70vh] flex justify-center items-center">
+                {/* Upload Button */}
+        <label className="relative cursor-pointer">
+          <input
+            type="file"
+            accept=".pdf"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+          <div className="flex items-center justify-center text-white transition-all">
+            {file ? <Check size={100} /> : <Upload size={100} />}
+          </div>
+          <div>Drag and drop the file or Upload is manually here</div>
+        </label>
+      </div>
       {/* Chat Section */}
+      <div className="w-[75%]">
       <div className="chat-container bg-[#29293D] p-4 rounded-xl shadow-lg flex flex-col h-[70vh] overflow-y-auto space-y-3 mb-8">
         {messages.map((msg, index) => (
           <div
@@ -73,18 +96,6 @@ const PdfAssistantPage = () => {
 
       {/* Input + Upload Section */}
       <div className="flex items-center gap-3">
-        {/* Upload Button */}
-        <label className="relative cursor-pointer">
-          <input
-            type="file"
-            accept=".pdf"
-            className="hidden"
-            onChange={handleFileChange}
-          />
-          <div className="w-10 h-10 flex items-center justify-center bg-[#A29BFE] hover:bg-[#7f73ff] text-[#1E1E2F] rounded-full transition-all">
-            {file ? <Check size={20} /> : <Upload size={20} />}
-          </div>
-        </label>
 
         {/* Input Field */}
         <input
@@ -92,7 +103,7 @@ const PdfAssistantPage = () => {
           placeholder="Ask a question..."
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
-          disabled={!file} // Disable the input until a file is uploaded
+          // disabled={!file} 
           className="flex-1 p-3 rounded-lg bg-[#29293D] text-[#EDEDED] text-sm focus:outline-none"
         />
 
@@ -100,10 +111,11 @@ const PdfAssistantPage = () => {
         <button
           onClick={handleSend}
           className="w-10 h-10 flex items-center justify-center bg-[#A29BFE] hover:bg-[#7f73ff] text-[#1E1E2F] rounded-full transition-all"
-          disabled={!file} // Disable the button until a file is uploaded
+          // disabled={!file} 
         >
           <Send size={20} />
         </button>
+      </div>
       </div>
     </div>
   );
