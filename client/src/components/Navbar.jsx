@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ const Navbar = () => {
     <nav className="flex justify-between items-center px-6 py-4 shadow-md bg-[#29293D]">
       {/* Logo */}
       <div className="text-2xl font-bold text-[#A29BFE]">
-        Learnify
+        <Link to="/">Learnify</Link>
       </div>
 
       {/* Menu Items */}

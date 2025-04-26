@@ -28,13 +28,13 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="h-[80%] flex items-center justify-center bg-[#1E1E2F] pt-[5%]">
+    <div className="h-[80%] flex items-center justify-center bg-[#1E1E2F] mt-[5%]">
       <div className="bg-[#29293D] p-8 rounded-2xl shadow-2xl w-full max-w-md">
-        <h2 className="text-3xl font-bold mb-6 text-center text-white">Login to Your Account</h2>
+        <h2 className="mb-6 text-3xl font-bold text-center text-white">Login to Your Account</h2>
         
         <form onSubmit={handleLogin} className="space-y-5">
           <div>
-            <label className="block text-sm text-gray-300 mb-1">Email</label>
+            <label className="block mb-1 text-sm text-gray-300">Email</label>
             <input
               type="email"
               value={email}
@@ -46,7 +46,7 @@ const LoginPage = () => {
           </div>
 
           <div>
-            <label className="block text-sm text-gray-300 mb-1">Password</label>
+            <label className="block mb-1 text-sm text-gray-300">Password</label>
             <input
               type="password"
               value={password}
@@ -65,7 +65,7 @@ const LoginPage = () => {
           </button>
         </form>
 
-        <div className="text-center mt-6">
+        <div className="mt-6 text-center">
           <p className="text-gray-400">
             Don't have an account?{" "}
             <button
