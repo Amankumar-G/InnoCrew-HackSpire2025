@@ -25,3 +25,14 @@
     background-color: #7f73ff; /* Darken thumb color when hovered */
   }
   
+  /* Add this inside your app.css or global styles */
+
+.gutter {
+  background-color: white;
+  background-clip: padding-box;
+  cursor: col-resize;
+}
+
+.gutter:hover {
+  background-color: #888;
+}

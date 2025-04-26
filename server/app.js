@@ -7,7 +7,6 @@ import chalk from 'chalk';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import passport from 'passport';
-import promMid from 'express-prometheus-middleware';
 import { register } from 'prom-client'; // Import Prometheus client
 
 import cors from './config/corsConfig.js';
@@ -15,6 +14,7 @@ import './config/mongodb.js';
 import { displayStartupMessage } from './config/start.js';
 import passportConfig from './config/passport.js';
 import studentRoute from './Router/student.js';
+import learningPathRoute from './Router/learningPath.js';
 import { initializeSocket, io } from './config/socket.js';
 import fileUploadRouter from "./Router/fileupload.js"
 import chatRouter from "./Router/chatRouter.js"
@@ -35,13 +35,13 @@ initializeSocket(server);
 const PORT = process.env.PORT || 5000;
 
 // Prometheus Middleware for Metrics
-app.use(promMid({
-  metricsPath: '/metrics',
-  collectDefaultMetrics: true,
-  requestDurationBuckets: [0.1, 0.5, 1, 1.5],
-  requestLengthBuckets: [512, 1024, 5120, 10240, 51200, 102400],
-  responseLengthBuckets: [512, 1024, 5120, 10240, 51200, 102400],
-}));
+// app.use(promMid({
+//   metricsPath: '/metrics',
+//   collectDefaultMetrics: true,
+//   requestDurationBuckets: [0.1, 0.5, 1, 1.5],
+//   requestLengthBuckets: [512, 1024, 5120, 10240, 51200, 102400],
+//   responseLengthBuckets: [512, 1024, 5120, 10240, 51200, 102400],
+// }));
 
 // Middleware
 app.use(express.json());
@@ -130,6 +130,7 @@ app.get('/metrics', async (req, res) => {
 app.use('/student', studentRoute);
 app.use("/upload", fileUploadRouter);
 app.use("/chat", chatRouter);
+app.use('/learning-path', learningPathRoute);
 
 // Root Route
 app.get('/', (req, res) => {

@@ -11,7 +11,7 @@ const router = express.Router();
 
 // POST route to register a new Student
 router.post('/register', async (req, res) => {
-  const { name, email, password, username} = req.body;
+  const { name, email, password, username, isDeaf, age} = req.body;
   try {
     let user = await Student.findOne({ email });
     if (user) {
@@ -23,6 +23,8 @@ router.post('/register', async (req, res) => {
       email,
       password,
       username,
+      isDeaf,
+      age
     });
     
     await user.save();
@@ -52,7 +54,6 @@ router.post('/login', async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
-
     const payload = { id: user.id, name: user.name };
     const token = jwt.sign(payload, secret, { expiresIn: '1d' });
 
