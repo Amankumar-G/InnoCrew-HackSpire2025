@@ -18,6 +18,12 @@ const Navbar = () => {
       {/* Menu Items */}
       <div className="flex items-center gap-6">
         <button 
+          onClick={() => navigate('/dead-and-dumb')} 
+          className="text-[#EDEDED] hover:text-[#A29BFE] transition-all"
+        >
+          Deaf and dumb
+        </button>
+        <button 
           onClick={() => navigate('/quizzes')} 
           className="text-[#EDEDED] hover:text-[#A29BFE] transition-all"
         >
