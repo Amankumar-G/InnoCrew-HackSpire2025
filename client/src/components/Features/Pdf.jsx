@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Upload, Check, Send } from "lucide-react"; // <-- Import Send icon too!
+import axios from "axios";
 
 const PdfAssistantPage = () => {
   const [file, setFile] = useState(null);
@@ -20,14 +21,21 @@ const PdfAssistantPage = () => {
     if (e.target.files[0]) {
       setFile(e.target.files[0]);
     }
+
+    const formData = FormData(file,"pdf");
+    axios.post("http://localhost:5000/upload/one", formData).then(res=>console.log(res));
+
   };
 
   const handleSend = () => {
-    if (!question.trim()) return;
 
-    const randomAnswer =
-      randomAnswers[Math.floor(Math.random() * randomAnswers.length)];
 
+
+    // if (!question.trim()) return;
+
+    // const randomAnswer =
+    //   randomAnswers[Math.floor(Math.random() * randomAnswers.length)];
+    axios.post("http://localhost:5000/chat", { userQuery:question }).then(res=>console.log(res));
     setMessages((prev) => [
       ...prev,
       { type: "user", text: question },
