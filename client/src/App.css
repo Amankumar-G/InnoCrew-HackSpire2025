@@ -30,9 +30,10 @@
 .gutter {
   background-color: white;
   background-clip: padding-box;
-  cursor: col-resize;
+  cursor:ew-resize;
 }
 
 .gutter:hover {
   background-color: #888;
 }
+

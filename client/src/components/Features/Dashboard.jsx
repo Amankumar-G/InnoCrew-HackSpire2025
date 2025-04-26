@@ -28,7 +28,7 @@ const Dashboard = () => {
         {/* Profile Image */}
         <div className="w-36 h-36 rounded-full overflow-hidden mb-4 border-4 border-[#A0C4FF]">
           <img
-            src="https://randomuser.me/api/portraits/men/75.jpg"
+            src="https://png.pngtree.com/thumb_back/fh260/background/20230611/pngtree-screenshotsaturday-image_2937739.jpg"
             alt="Profile"
             className="w-full h-full object-cover"
           />

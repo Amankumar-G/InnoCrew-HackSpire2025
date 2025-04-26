@@ -12,25 +12,25 @@ const model = new ChatOpenAI({
     model: "gpt-4o-mini"
  });
 
-function formatForLLM(userProfile) {
-  console.log(userProfile);
+ function formatForLLM(userProfile) {
+    console.log(userProfile);
     return `
   User Profile:
   
   - Name: ${userProfile.name}
   - Age: ${userProfile.age}
   - Current Field: ${userProfile.currentField}
-  - Current Skills: ${userProfile.currentSkills.join(", ")}
-  - Interest in Learning: ${userProfile.interestInLearning.join(", ")}
+  - Current Skills: ${(userProfile.currentSkills || []).join(",")}
+  - Interest in Learning: ${(userProfile.interestInLearning || []).join(",")}
   - Dream Role or Exam Target: ${userProfile.dreamRoleOrExam}
   - Time Commitment: ${userProfile.timeCommitmentHoursPerWeek} hours per week
   - Major Topic to Focus: ${userProfile.majorTopicToStudy}
   - Preferred Pace: ${userProfile.preferredPace}
-  - Weak Areas: ${userProfile.weakAreas.join(", ")}
+  - Weak Areas: ${(userProfile.weakAreas || []).join(",")}
   - Deadline: ${userProfile.deadline}
-    `
+    `;
   }
-
+  
   const systemTemplate = `You are an AI Learning Path Designer. Your job is to take a student’s profile and craft:
 
   1. **A concise summary** of their background and goals.

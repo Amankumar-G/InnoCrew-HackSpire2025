@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import Footer from "./components/Footer";
-import { UserProvider } from "./context/userContext";
+import { UserProvider } from "./context/UserContext";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import LoginPage from "./components/Authentication/Login";
 import SignUpPage from "./components/Authentication/SignUp";
@@ -18,7 +18,7 @@ import './App.css';
 // 👇 A new component to use useLocation inside Router
 const AppContent = () => {
   const location = useLocation();
-  const hideFooterRoutes = ["/pdf-assistant", "/dashboard"];
+  const hideFooterRoutes = ["/pdf-assistant", "/dashboard", "/start"];
 
   return (
 <div className="bg-[#1E1E2F] min-h-screen flex flex-col font-poppins text-[#EDEDED]">
