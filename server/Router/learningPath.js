@@ -94,8 +94,8 @@ const promptTemplate = ChatPromptTemplate.fromMessages([
   router.post('/path',passport.authenticate('jwt', { session: false }), wrapAsync(async (req, res) => {
     const{ formdata } = req.body;   
     const studentId = req.user._id;
-
-    const formated = formatForLLM(userProfile);
+    console.log("Student ID:",  req.body);
+    const formated = formatForLLM(formdata);
     const promptValue = await promptTemplate.invoke({
         userProfile: formated,
       });

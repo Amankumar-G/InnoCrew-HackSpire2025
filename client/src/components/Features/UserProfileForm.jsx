@@ -1,20 +1,21 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus } from "lucide-react"; // For the plus icon
+import { Plus } from "lucide-react";
+import axios from "axios"; // Import Axios
 
 const UserProfileForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: "",
-    age: "",
-    currentField: "",
-    currentSkills: [""],
-    interestInLearning: [""],
-    dreamRoleOrExam: "",
-    timeCommitmentHoursPerWeek: "",
-    majorTopicToStudy: "",
-    preferredPace: "",
-    weakAreas: [""],
+    name: "demo",
+    age: "20",
+    currentField: "information technology",
+    currentSkills: ["nodejs","docker"],
+    interestInLearning: ["react"],
+    dreamRoleOrExam: "full stack",
+    timeCommitmentHoursPerWeek: "20",
+    majorTopicToStudy: "frontend",
+    preferredPace: "medium",
+    weakAreas: ["css"],
     deadline: ""
   });
 
@@ -36,18 +37,34 @@ const UserProfileForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Simulate API call (mock response)
-    const mockApiResponse = [
-      { topic: "Node.js", status: "In the vast and ever-expanding world of technology, one constant remains unchanged: the hunger for innovation. Developers, engineers, and creative thinkers alike are constantly seeking ways to push the boundaries of what’s possible, to imagine realities that were once confined to the pages of science fiction. Whether it's the evolution of artificial intelligence that can now write entire novels or the development of intricate decentralized systems that challenge traditional financial institutions, the spirit of exploration continues to drive humanity forward. Each breakthrough carries with it not only the pride of achievement but also the responsibility to wield newfound power wisely, ethically, and inclusively. As we stand on the cusp of the next great technological revolution, we must remind ourselves that while code can solve problems, it is empathy, creativity, and collaboration that truly shape a better world for all." },
-      { topic: "MongoDB", status: "In the vast and ever-expanding world of technology, one constant remains unchanged: the hunger for innovation. Developers, engineers, and creative thinkers alike are constantly seeking ways to push the boundaries of what’s possible, to imagine realities that were once confined to the pages of science fiction. Whether it's the evolution of artificial intelligence that can now write entire novels or the development of intricate decentralized systems that challenge traditional financial institutions, the spirit of exploration continues to drive humanity forward. Each breakthrough carries with it not only the pride of achievement but also the responsibility to wield newfound power wisely, ethically, and inclusively. As we stand on the cusp of the next great technological revolution, we must remind ourselves that while code can solve problems, it is empathy, creativity, and collaboration that truly shape a better world for all." },
-      { topic: "System Design Basics", status: " the vast and ever-expanding world of technology, one constant remains unchanged: the hunger for innovation. Developers, engineers, and creative thinkers alike are constantly seeking ways to push the boundaries of what’s possible, to imagine realities that were once confined to the pages of science fiction. Whether it's the evolution of artificial intelligence that can now write entire novels or the development of intricate decentralized systems that challenge traditional financial institutions, the spirit of exploration continues to drive humanity forward. Each breakthrough carries with it not only the pride of achievement but also the responsibility to wield newfound power wisely, ethically, and inclusively. As we stand on the cusp of the next great technological revolution, we must remind ourselves that while code can solve problems, it is empathy, creativity, and collaboration that truly shape a better world for all." }
-    ];
+    try {
+      // Example API endpoint
+      const apiUrl = "http://localhost:5000/learning-path/path";
 
-    // Redirect to ResponsePage with data
-    navigate("/response", { state: { responseData: mockApiResponse } });
+      // Bearer token (you can dynamically get it from localStorage or state if needed)
+      const token = localStorage.getItem("authToken"); 
+        console.log("Token:", token);
+        console.log("Form Data:", formData);
+      const response = await axios.post(apiUrl, {formdata : formData}, {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+     
+
+      console.log("API Response:", response.data);
+
+      // Redirect to ResponsePage with API response
+      navigate("/response", { state: { responseData: response.data } });
+
+    } catch (error) {
+      console.error("API call failed:", error);
+      alert("Failed to submit! Please try again.");
+    }
   };
 
   return (
@@ -57,14 +74,12 @@ const UserProfileForm = () => {
         onSubmit={handleSubmit}
         className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#29293D] p-8 rounded-lg shadow-lg"
       >
-        {/* Render fields */}
         {Object.keys(formData).map((key) => (
           <div key={key} className="flex flex-col">
             <label className="mb-1 text-sm capitalize">
               {key.replace(/([A-Z])/g, ' $1').trim()}
             </label>
 
-            {/* Dynamic Array Fields */}
             {["currentSkills", "interestInLearning", "weakAreas"].includes(key) ? (
               <div className="space-y-2">
                 {formData[key].map((item, index) => (
@@ -85,7 +100,6 @@ const UserProfileForm = () => {
                 </button>
               </div>
             ) : (
-              // Regular Input Fields
               <input
                 type={key === "deadline" ? "date" : "text"}
                 name={key}
@@ -97,7 +111,6 @@ const UserProfileForm = () => {
           </div>
         ))}
 
-        {/* Submit Button */}
         <div className="flex justify-center md:col-span-2">
           <button
             type="submit"
