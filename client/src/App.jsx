@@ -12,7 +12,7 @@ import Dashboard from "./components/Features/Dashboard";
 import UserProfileForm from "./components/Features/UserProfileForm";
 import ResponsePage from "./components/Features/ResponsePage";
 import LearningPage from "./components/Features/StartPage";
-import DeafAndDumb from "./components/Features/DeadAndDumb";
+import DeafAndDumb from "./components/Features/DeafAndDumb";
 import './App.css';
 
 // 👇 A new component to use useLocation inside Router
