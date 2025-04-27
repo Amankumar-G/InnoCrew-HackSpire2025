@@ -22,7 +22,7 @@ const AppContent = () => {
 
   return (
 <div className="bg-[#1E1E2F] min-h-screen flex flex-col font-poppins text-[#EDEDED]">
-  <div className="sticky top-0 z-10">
+  <div className="sticky top-0 z-20">
   <Navbar />
   </div>
   
