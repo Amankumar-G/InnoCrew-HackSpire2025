@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import LoginPage from "./components/Authentication/Login";
 import SignUpPage from "./components/Authentication/SignUp";
 import QuizzesPage from "./components/Features/Quiz";
+import QuizPage from "./components/Features/QuizPage";
 import PdfAssistantPage from "./components/Features/Pdf";
 import Dashboard from "./components/Features/Dashboard";
 import UserProfileForm from "./components/Features/UserProfileForm";
@@ -32,6 +33,7 @@ const AppContent = () => {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignUpPage />} />
       <Route path="/quizzes" element={<QuizzesPage />} />
+      <Route path="/quiz" element={<QuizPage />} />
       <Route path="/pdf-assistant" element={<PdfAssistantPage />} />
       <Route path="/paths" element={<UserProfileForm />} />
       <Route path="/response" element={<ResponsePage />} />

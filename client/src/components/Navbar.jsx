@@ -56,7 +56,7 @@ const Navbar = () => {
               onClick={() => navigate('/deaf-and-dumb')} 
               className="text-[#EDEDED] hover:text-[#A29BFE] transition-all"
             >
-              Deaf and dumb
+              Deaf and Mute
             </button>
             <button 
               onClick={() => navigate('/quizzes')} 

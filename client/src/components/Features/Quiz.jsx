@@ -1,71 +1,68 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import axios from "axios"; // for future use
+import axios from "axios";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function SmartQuizSingle() {
-  const [sampleQuestion, setQuestion] = useState({
-    question: "What is the integration of log(x)?",
-    options: ["2x", "1/x", "x^2", "x"],
-    correctAnswer: "1/x",
-    difficulty: 1,
-    module: "alpha",
-  });
-
+  const [questions, setQuestions] = useState([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState("");
   const [isAnswered, setIsAnswered] = useState(false);
   const [correct, setCorrect] = useState(false);
   const [score, setScore] = useState(0);
-  const [questionNumber, setQuestionNumber] = useState(1);
   const [showScore, setShowScore] = useState(false);
 
-  const totalQuestions = 5; // updated to 5
+  const totalQuestions = 7; // Showing only 6-7 questions
+  const token = localStorage.getItem("authToken"); // assuming you saved auth token in localStorage
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/quiz", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const fetchedQuestions = res.data.questions.slice(0, totalQuestions); // select only needed
+        const formattedQuestions = fetchedQuestions.map((q) => ({
+          question: q.question,
+          options: Object.values(q.options),
+          correctAnswer: q.options[q.correct_option],
+        }));
+        setQuestions(formattedQuestions);
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+      }
+    };
+
+    fetchQuestions();
+  }, [token]);
 
   const handleOptionClick = (option) => {
     if (!isAnswered) {
       setSelectedOption(option);
       setIsAnswered(true);
-      if (option === sampleQuestion.correctAnswer) {
+      if (option === questions[currentQuestionIndex].correctAnswer) {
         setCorrect(true);
       }
     }
   };
 
-  const clickNext = async () => {
+  const clickNext = () => {
     if (correct) {
       setScore((prev) => prev + 1);
     }
-    if (questionNumber >= totalQuestions) {
+    if (currentQuestionIndex >= totalQuestions - 1) {
       setShowScore(true);
       return;
     }
 
-    try {
-      // Dummy backend call
-      /*
-      await axios.post("/api/next-question", { correct }).then((res) => {
-        setQuestion(res.data);
-      });
-      */
-
-      // Dummy next question:
-      setQuestion({
-        question: "What is the derivative of x²?",
-        options: ["2x", "x", "x^2", "2"],
-        correctAnswer: "2x",
-        difficulty: 1,
-        module: "calculus",
-      });
-    } catch (error) {
-      console.error("Error fetching next question", error);
-    }
-
+    setCurrentQuestionIndex((prev) => prev + 1);
     setSelectedOption("");
     setIsAnswered(false);
     setCorrect(false);
-    setQuestionNumber((prev) => prev + 1);
   };
 
   // Pie Chart Config
@@ -88,27 +85,30 @@ export default function SmartQuizSingle() {
       },
     },
   };
+
+  if (questions.length === 0) {
+    return (
+      <main className="flex items-center justify-center min-h-screen bg-[#1E1E2F] text-white">
+        Loading Questions...
+      </main>
+    );
+  }
+
   return (
     <main className="mt-[5%] bg-[#1E1E2F] font-poppins flex flex-col items-center justify-center p-6 scroll-smooth">
       <div className="bg-[#2D2A4A] rounded-2xl shadow-2xl p-8 w-full max-w-xl">
-        
         {!showScore ? (
           <>
-            {/* Question Number */}
-            <div className="mb-4 text-[#E0E6F8] text-xl font-semibold text-center">
-              Question {questionNumber} of 5
-            </div>
-
             {/* Question Text */}
             <div className="mb-8 text-center">
               <h1 className="text-2xl md:text-3xl font-semibold text-[#E0E6F8]">
-                {sampleQuestion.question}
+                {questions[currentQuestionIndex].question}
               </h1>
             </div>
 
-            {/* Options Grid (2x2 Matrix) */}
+            {/* Options Grid */}
             <div className="grid grid-cols-2 gap-4 mb-6">
-              {sampleQuestion.options.map((option, idx) => (
+              {questions[currentQuestionIndex].options.map((option, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleOptionClick(option)}
@@ -116,7 +116,7 @@ export default function SmartQuizSingle() {
                   className={`w-full text-lg py-4 rounded-2xl shadow-md transition
                     ${
                       selectedOption
-                        ? option === sampleQuestion.correctAnswer
+                        ? option === questions[currentQuestionIndex].correctAnswer
                           ? "bg-green-500 text-white"
                           : option === selectedOption
                           ? "bg-red-500 text-white"
@@ -144,19 +144,19 @@ export default function SmartQuizSingle() {
         ) : (
           // Final Score Page
           <div className="flex flex-col items-center justify-center">
-          <h2 className="text-3xl font-bold text-[#E0E6F8] mb-6">
-            Quiz Completed!
-          </h2>
+            <h2 className="text-3xl font-bold text-[#E0E6F8] mb-6">
+              Quiz Completed!
+            </h2>
 
-          <div className="relative w-60 h-60">
-            <Doughnut data={chartData} options={chartOptions} />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-white text-2xl font-bold">
-                {score}/{totalQuestions}
+            <div className="relative w-60 h-60">
+              <Doughnut data={chartData} options={chartOptions} />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-2xl font-bold text-white">
+                  {score}/{totalQuestions}
+                </div>
               </div>
             </div>
           </div>
-        </div>
         )}
       </div>
     </main>

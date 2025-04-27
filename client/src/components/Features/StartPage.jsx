@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Modal from "../utils/modal";
 import Chatbot from "../utils/chatbot";
 import Split from "react-split";
 import { CheckCircle } from "lucide-react";
@@ -8,63 +7,32 @@ import ReactMarkdown from "react-markdown";
 import axios from "axios";
 
 const LearningPage = () => {
-  const [clearChat, setClearChat] = useState(false);
-
   const location = useLocation();
   const responseData = location.state?.responseData || [];
   const [selectedTopic, setSelectedTopic] = useState(responseData[0]);
   const [selectedPage, setSelectedPage] = useState(null);
-  const [showModal, setShowModal] = useState(false);
   const [completedPages, setCompletedPages] = useState([]); // Track completed pages
+  const [clearChat, setClearChat] = useState(false);
 
   const handlePageClick = (page) => {
     setSelectedPage(page);
-    setShowModal(true);
   };
-
-  const handleModalChoice = async (choice) => {
-    setShowModal(false);
-  
-    if (choice === "quiz") {
-      console.log("Redirect to quiz page 🚀");
-      // You can handle quiz redirection here
-    } else if (choice === "learn" && selectedPage) {
-      // Only send POST when user selects "learn"
-      try {
-        await axios.post('http://localhost:5000/chat-conversation/initialize', {
-          systemPrompt: selectedPage.content,
-        });
-        console.log("✅ Content sent successfully for learning!");
-      } catch (error) {
-        console.error("❌ Error sending content to backend:", error);
-      }
-    }
-  };
-  
 
   const markPageComplete = async (pageTitle) => {
     if (!completedPages.includes(pageTitle)) {
       setCompletedPages((prev) => [...prev, pageTitle]);
     }
-  
+
     try {
       await axios.post("http://localhost:5000/chat-conversation/clear", {
-        page: selectedPage
-      })
-        .then(response => {
-          console.log('Response:', response.data);
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
+        page: selectedPage,
+      });
       console.log("✅ Chat conversation cleared!");
       setClearChat(true); // Trigger clearing of the chat
     } catch (error) {
       console.error("❌ Failed to clear chat conversation:", error);
     }
   };
-  
-  
 
   return (
     <div className="bg-[#1E1E2F] h-[90vh] flex flex-col">
@@ -85,7 +53,6 @@ const LearningPage = () => {
                   title: topic.topicName,
                   content: topic.teacherLearning,
                 });
-                setShowModal(true);
               }}
             >
               {topic.topicName}
@@ -131,19 +98,11 @@ const LearningPage = () => {
 
             {/* Chatbot */}
             <div className="p-4 bg-[#29293D] overflow-y-auto">
-              <Chatbot clearChat={clearChat}/>
+              <Chatbot clearChat={clearChat} />
             </div>
           </Split>
         )}
       </div>
-
-      {/* Modal */}
-      {showModal && (
-        <Modal
-          onClose={() => setShowModal(false)}
-          onChoice={handleModalChoice}
-        />
-      )}
     </div>
   );
 };
