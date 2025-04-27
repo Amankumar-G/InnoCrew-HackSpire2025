@@ -3,6 +3,12 @@
 # Use a slim Python base image
 FROM python:3.9-slim AS base
 
+# Install system dependencies for OpenCV
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1 \
+    libglib2.0-0 \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 # Set working directory
 WORKDIR /app
 
@@ -13,10 +19,14 @@ FROM base AS builder
 COPY --link requirements.txt .
 RUN --mount=type=cache,target=/root/.cache/pip \
     python -m venv .venv && \
+    .venv/bin/pip install --upgrade pip && \
     .venv/bin/pip install -r requirements.txt
 
 # Final stage
 FROM base AS final
+
+# Set working directory again
+WORKDIR /app
 
 # Copy application code
 COPY --link . .

@@ -19,6 +19,7 @@ import { initializeSocket, io } from './config/socket.js';
 import fileUploadRouter from "./Router/fileupload.js"
 import chatRouter from "./Router/chatRouter.js"
 import chatConverstionRouter from "./Router/chatAgent.js"
+import  generalQuizRoute from "./Router/quiz.js"
 
 // Display startup banner
 displayStartupMessage();
@@ -132,6 +133,7 @@ app.use('/student', studentRoute);
 app.use("/upload", fileUploadRouter);
 app.use("/chat", chatRouter);
 app.use('/learning-path', learningPathRoute);
+app.use('/quiz', generalQuizRoute);
 app.use('/chat-conversation', chatConverstionRouter);
 
 // Root Route
