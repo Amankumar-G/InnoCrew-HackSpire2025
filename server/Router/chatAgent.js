@@ -78,8 +78,6 @@ Each question must have 4 options labeled "A", "B", "C", "D", and only one corre
 Output strictly and only the following JSON format. Do not include any explanation, comments, or additional text. Only output the JSON:
 
 json
-Copy
-Edit
 {
   "quiz": [
     {
