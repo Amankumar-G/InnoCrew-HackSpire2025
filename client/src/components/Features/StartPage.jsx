@@ -4,7 +4,7 @@ import Split from "react-split";
 import { CheckCircle } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
-import axios from "axios";
+
 
 const LearningPage = () => {
   const location = useLocation();
@@ -30,7 +30,9 @@ const LearningPage = () => {
       console.log("✅ Chat conversation cleared!");
       setClearChat(true); // Trigger clearing of the chat
     } catch (error) {
-      console.error("❌ Failed to clear chat conversation:", error);
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false); // loader band kar
     }
   };
 

@@ -1,79 +1,71 @@
 import React, { useRef, useCallback, useEffect, useState } from 'react';
 import Webcam from 'react-webcam';
-import io from 'socket.io-client';
-import axios from 'axios'; // Import axios
 
 const WebcamStream = ({ handleClick }) => {
   const [start, setStart] = useState(false);
   const webcamRef = useRef(null);
   const socketRef = useRef(null);
   const [gesture, setGesture] = useState(null);
-  const [isWebSocketActive, setIsWebSocketActive] = useState(false);
-
-  useEffect(() => {
-    if (isWebSocketActive) {
-      socketRef.current = io.connect('http://localhost:5000');
-
-      socketRef.current.on('result', (data) => {
-        setGesture(data.gesture_name);
-      });
-
-      socketRef.current.on('error', (message) => {
-        console.error('Error:', message);
-      });
-
-      return () => {
-        socketRef.current.disconnect();
-      };
-    }
-  }, [isWebSocketActive]);
 
   const startWebSocket = () => {
-    if (isWebSocketActive) {
-      // Disconnect the socket and stop the WebSocket
-      socketRef.current.disconnect();
-      setIsWebSocketActive(false);
+    if (start) {
+      // Disconnect WebSocket
+      if (socketRef.current) {
+        socketRef.current.close();
+      }
       setStart(false);
       setGesture(null);
     } else {
-      axios.get('http://localhost:5000/start-websocket',
-        {withCredentials:true}
-      )
-        .then((response) => {
-          const message = response.data;
+      // Connect WebSocket
+      socketRef.current = new WebSocket('ws://localhost:8080/ws/predict/');
+      socketRef.current.binaryType = 'arraybuffer'; // Important: tell WebSocket we're sending/receiving binary
 
-          if (message.includes('WebSocket connection is now active.')) {
-            setIsWebSocketActive(true);
-            setStart(true);
-          }
-        })
-        .catch((error) => {
-          console.error('Failed to start WebSocket:', error);
-        });
+      socketRef.current.onopen = () => {
+        console.log('WebSocket connected');
+        setStart(true);
+      };
+
+      socketRef.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log('Received gesture:', data);
+        setGesture(data.gesture_name);
+      };
+
+      socketRef.current.onerror = (error) => {
+        console.error('WebSocket error:', error);
+      };
+
+      socketRef.current.onclose = () => {
+        console.log('WebSocket closed');
+        setStart(false);
+      };
     }
   };
 
   const captureFrame = useCallback(() => {
-    if (webcamRef.current && socketRef.current) {
+    if (webcamRef.current && socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
       const imageSrc = webcamRef.current.getScreenshot();
       if (imageSrc) {
-        socketRef.current.emit('videoFrame', imageSrc);
+        const base64Data = imageSrc.split(',')[1];
+        const byteArray = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+        socketRef.current.send(byteArray);
       }
     }
   }, []);
 
   useEffect(() => {
-    if (isWebSocketActive) {
-      const intervalId = setInterval(captureFrame, 100);
-      return () => clearInterval(intervalId);
+    let intervalId;
+    if (start) {
+      intervalId = setInterval(captureFrame, 300); // Capture a frame every 300ms (adjustable)
     }
-  }, [captureFrame, isWebSocketActive]);
+    return () => clearInterval(intervalId);
+  }, [start, captureFrame]);
 
   return (
-    <div className='text-center md:p-4 pt-2 p-2 flex flex-col items-center '>
-      <div className='flex justify-between md:w-96 w-screen px-5 '>
+    <div className='text-center md:p-4 pt-2 p-2 flex flex-col items-center'>
+      <div className='flex justify-between md:w-96 w-screen px-5'>
         <div onClick={handleClick}>
-          <button className='font-bold p-3 m-2 sm:text-xl hover:cursor-pointer hover:text-blue-800 '>
+          <button className='font-bold p-3 m-2 sm:text-xl hover:cursor-pointer hover:text-blue-800'>
             Back
           </button>
         </div>
@@ -90,9 +82,7 @@ const WebcamStream = ({ handleClick }) => {
           screenshotFormat="image/jpeg"
           width={640}
           height={480}
-          style={{
-            transform: 'scaleX(-1)',
-          }}
+          style={{ transform: 'scaleX(-1)' }}
           className='rounded'
         />
       </div>
@@ -101,6 +91,6 @@ const WebcamStream = ({ handleClick }) => {
       </div>
     </div>
   );
-};     
+};
 
 export default WebcamStream;
