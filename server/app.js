@@ -8,7 +8,7 @@ import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import passport from 'passport';
 import { register } from 'prom-client'; // Import Prometheus client
-
+import ConversRoute from './Router/conversionRouter.js';
 import cors from './config/corsConfig.js';
 import './config/mongodb.js';
 import { displayStartupMessage } from './config/start.js';
@@ -132,6 +132,7 @@ app.get('/metrics', async (req, res) => {
 app.use('/student', studentRoute);
 app.use("/upload", fileUploadRouter);
 app.use("/chat", chatRouter);
+app.use('/conversion', ConversRoute);
 app.use('/learning-path', learningPathRoute);
 app.use('/quiz', generalQuizRoute);
 app.use('/chat-conversation', chatConverstionRouter);
